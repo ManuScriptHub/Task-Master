@@ -4,7 +4,8 @@ import {
     getTaskById,
     insertTask,
     updateTaskById,
-    deleteTaskById
+    deleteTaskById,
+    updateTaskCompletionStatus
   } from '../models/taskModel.js';
   
   export const getTasks = async (_, res) => {
@@ -68,6 +69,26 @@ import {
       if (result.rows.length === 0) return res.status(404).json({ message: 'Task not found' });
       res.json({ message: 'Task deleted' });
     } catch (err) {
+      res.status(500).json({ message: 'Internal server error' });
+    }
+  };
+  
+  // New controller function to toggle task completion status without affecting other fields
+  export const toggleTaskCompletion = async (req, res) => {
+    const { id } = req.params;
+    const { is_completed } = req.body;
+    
+    try {
+      console.log(`Toggling task ${id} completion status to ${is_completed}`);
+      const result = await updateTaskCompletionStatus(id, is_completed);
+      
+      if (result.rows.length === 0) {
+        return res.status(404).json({ message: 'Task not found' });
+      }
+      
+      res.json(result.rows[0]);
+    } catch (err) {
+      console.error('Toggle task completion error:', err);
       res.status(500).json({ message: 'Internal server error' });
     }
   };

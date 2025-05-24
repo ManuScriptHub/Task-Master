@@ -26,6 +26,14 @@ export const updateTaskById = (id, task_name, priority, due_date, is_completed) 
   );
 };
 
+// New function to only update the completion status without touching other fields
+export const updateTaskCompletionStatus = (id, is_completed) => {
+  return pool.query(
+    'UPDATE tasks SET is_completed = $1 WHERE id = $2 RETURNING *',
+    [is_completed, id]
+  );
+};
+
 export const deleteTaskById = (id) => {
   return pool.query('DELETE FROM tasks WHERE id = $1 RETURNING *', [id]);
 };

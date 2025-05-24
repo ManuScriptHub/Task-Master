@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useProjectsStore } from '../stores/projectsStore';
 import { useTasksStore } from '../stores/tasksStore';
 import { useToast } from '../hooks/use-toast';
+import { api } from '../lib/api';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
@@ -125,18 +126,19 @@ const ProjectDetailPage = () => {
   const handleToggleTaskCompletion = async (taskId, isCompleted) => {
     const task = tasks.find(t => t.id === taskId);
     if (task) {
-      // Create a new object with only the necessary fields to avoid date manipulation issues
-      const updateData = {
-        task_name: task.task_name,
-        priority: task.priority || 'medium',
-        due_date: task.due_date, // Keep the original due_date string as is
-        is_completed: !isCompleted,
-        project_id: task.project_id || projectId
-      };
-      
       try {
-        const updatedTask = await updateTask(taskId, updateData);
+        // Use the PATCH endpoint directly with minimal data
+        const updatedTask = await api.patch(`/task/${taskId}/toggle-completion`, {
+          is_completed: !isCompleted
+        });
+        
         if (updatedTask) {
+          // Update the task in the local state
+          const updatedTasks = tasks.map(t => 
+            t.id === updatedTask.id ? updatedTask : t
+          );
+          useTasksStore.setState({ tasks: updatedTasks });
+          
           const newStatus = !isCompleted ? "completed" : "incomplete";
           toast({
             title: `Task ${newStatus === "completed" ? "Completed" : "Marked as Incomplete"}`,

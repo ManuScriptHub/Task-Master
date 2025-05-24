@@ -29,16 +29,11 @@ import {
   FormMessage,
 } from "../ui/form";
 import { useToast } from "../../hooks/use-toast";
-import { Loader2, Sparkles, Pin, PinOff } from "lucide-react";
-// AI feature temporarily disabled
-// import { generateProjectDescription } from "@/ai/flows/generate-project-description";
-
+import { Loader2, Pin, PinOff } from "lucide-react";
 export function ProjectForm({ project, onSave, closeDialog }) {
   const { user } = useContext(AuthContext);
   const { toast } = useToast();
   const [isSaving, setIsSaving] = React.useState(false);
-  // AI feature temporarily disabled
-  // const [isGeneratingDesc, setIsGeneratingDesc] = React.useState(false);
 
   const form = useForm({
     resolver: zodResolver(ProjectSchema),
@@ -65,14 +60,7 @@ export function ProjectForm({ project, onSave, closeDialog }) {
     }
   }, [project, form]);
 
-  // AI feature temporarily disabled
-  const handleGenerateDescription = async () => {
-    toast({
-      title: "AI Feature Disabled",
-      description: "The AI description generation feature is temporarily disabled.",
-      variant: "default",
-    });
-  };
+
 
   async function onSubmit(data) {
     setIsSaving(true);
@@ -136,19 +124,7 @@ export function ProjectForm({ project, onSave, closeDialog }) {
             name="description"
             render={({ field }) => (
               <FormItem>
-                <div className="flex items-center justify-between">
-                  <FormLabel>Description (Optional)</FormLabel>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handleGenerateDescription}
-                    className="text-xs"
-                  >
-                    <Sparkles className="mr-1 h-3 w-3" />
-                    AI Assist
-                  </Button>
-                </div>
+                <FormLabel>Description (Optional)</FormLabel>
                 <FormControl>
                   <Textarea placeholder="Describe your project..." {...field} rows={4} />
                 </FormControl>
