@@ -15,8 +15,8 @@ export function ProjectList({
 }) {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {[...Array(3)].map((_, i) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {[...Array(6)].map((_, i) => (
           <div key={i} className="rounded-lg border bg-card text-card-foreground shadow-sm p-6 space-y-4 animate-pulse">
             <div className="h-6 bg-muted rounded w-3/4"></div>
             <div className="h-4 bg-muted rounded w-full"></div>
@@ -53,7 +53,7 @@ export function ProjectList({
       {pinnedProjects.length > 0 && (
         <div>
           <h2 className="text-xl font-semibold mb-4 text-primary">Pinned Projects</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {pinnedProjects.map((project) => (
               <ProjectCard
                 key={project.id}
@@ -71,7 +71,7 @@ export function ProjectList({
          <div>
           {pinnedProjects.length > 0 && <hr className="my-8"/>}
           <h2 className="text-xl font-semibold mb-4">Other Projects</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {unpinnedProjects.map((project) => (
               <ProjectCard
                 key={project.id}

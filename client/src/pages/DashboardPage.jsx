@@ -32,7 +32,8 @@ const DashboardPage = () => {
     return { ...project, tasks: projectTasks };
   });
   
-  const recentProjects = projectsWithTasks.slice(0, 3);
+  // Show up to 6 projects on the dashboard instead of just 3
+  const recentProjects = projectsWithTasks.slice(0, 6);
   
   return (
     <div className="space-y-8">
@@ -79,25 +80,35 @@ const DashboardPage = () => {
       
       <div>
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">Recent Projects</h2>
+          <h2 className="text-2xl font-semibold">Your Projects</h2>
           <Button variant="outline" asChild>
-            <Link to="/projects">View All</Link>
+            <Link to="/projects">View All Projects</Link>
           </Button>
         </div>
         
         {projectsLoading ? (
-          <div>Loading projects...</div>
+          <div className="p-8 text-center">
+            <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p>Loading your projects...</p>
+          </div>
         ) : (
-          <ProjectList 
-            projects={recentProjects} 
-            onTogglePin={(projectId, isPinned) => {
-              const { updateProject } = useProjectsStore.getState();
-              const project = projects.find(p => p.id === projectId);
-              if (project) {
-                updateProject(projectId, { ...project, is_pinned: !isPinned });
-              }
-            }}
-          />
+          <>
+            {userProjects.length > 6 && (
+              <p className="text-muted-foreground mb-4">
+                Showing 6 of {userProjects.length} projects. View all projects for the complete list.
+              </p>
+            )}
+            <ProjectList 
+              projects={recentProjects} 
+              onTogglePin={(projectId, isPinned) => {
+                const { updateProject } = useProjectsStore.getState();
+                const project = projects.find(p => p.id === projectId);
+                if (project) {
+                  updateProject(projectId, { ...project, is_pinned: !isPinned });
+                }
+              }}
+            />
+          </>
         )}
       </div>
     </div>

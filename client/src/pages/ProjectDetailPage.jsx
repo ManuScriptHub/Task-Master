@@ -4,6 +4,7 @@ import { useProjectsStore } from '../stores/projectsStore';
 import { useTasksStore } from '../stores/tasksStore';
 import { useToast } from '../hooks/use-toast';
 import { api } from '../lib/api';
+import { AIAssistant } from '../components/ai/AIAssistant';
 import { Button } from '../components/ui/button';
 import { Card, CardContent } from '../components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '../components/ui/dialog';
@@ -19,6 +20,25 @@ const ProjectDetailPage = () => {
   const { projectId } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  // Get the tab parameter from the URL
+  const searchParams = new URLSearchParams(window.location.search);
+  const tabParam = searchParams.get('tab');
+  
+  // Handle tab change
+  const handleTabChange = (value) => {
+    // Update the URL with the new tab value
+    const newUrl = new URL(window.location.href);
+    if (value === 'tasks') {
+      // Remove the tab parameter if it's the default tab
+      newUrl.searchParams.delete('tab');
+    } else {
+      newUrl.searchParams.set('tab', value);
+    }
+    
+    // Update the URL without reloading the page
+    window.history.pushState({}, '', newUrl);
+  };
   
   const { currentProject, fetchProjectById, updateProject, deleteProject, isLoading: projectLoading } = useProjectsStore();
   const { tasks, fetchTasks, createTask, updateTask, deleteTask, isLoading: tasksLoading } = useTasksStore();
@@ -185,10 +205,11 @@ const ProjectDetailPage = () => {
         </CardContent>
       </Card>
       
-      <Tabs defaultValue="tasks">
+      <Tabs defaultValue={tabParam || "tasks"} onValueChange={handleTabChange}>
         <TabsList>
           <TabsTrigger value="tasks">Tasks</TabsTrigger>
           <TabsTrigger value="details">Details</TabsTrigger>
+          <TabsTrigger value="ai">AI Assistant</TabsTrigger>
         </TabsList>
         
         <TabsContent value="tasks" className="mt-4">
@@ -268,6 +289,10 @@ const ProjectDetailPage = () => {
               </p>
             </div>
           </div>
+        </TabsContent>
+        
+        <TabsContent value="ai" className="mt-4">
+          <AIAssistant projectId={projectId} />
         </TabsContent>
       </Tabs>
       

@@ -5,6 +5,7 @@ import userRoutes from './routes/users.js';
 import projectRoutes from './routes/projects.js';
 import taskRoutes from './routes/tasks.js';
 import authRoutes from './routes/auth.js';
+import aiRoutes from './routes/ai.js';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use('/api', userRoutes);
 app.use('/api', projectRoutes);
 app.use('/api', taskRoutes);
 app.use('/api/auth', authRoutes);
+app.use('/api', aiRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
