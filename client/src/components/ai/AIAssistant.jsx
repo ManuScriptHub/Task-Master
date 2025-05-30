@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs';
-import { AISummary } from './AISummary';
+import { AISummary as OriginalAISummary } from './AISummary';
 import { AIChat } from './AIChat';
 import { Bot, BarChart } from 'lucide-react';
 import { useAIStore } from '../../stores/aiStore';
+
+// Memoize the AISummary component to prevent unnecessary re-renders
+const AISummary = memo(OriginalAISummary);
 
 export const AIAssistant = ({ projectId }) => {
   const [activeTab, setActiveTab] = useState('summary');

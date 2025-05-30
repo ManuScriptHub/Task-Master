@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAIStore } from '../../stores/aiStore';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Separator } from '../ui/separator';
@@ -6,16 +6,36 @@ import { Button } from '../ui/button';
 import { RefreshCw, Lightbulb, Sparkles } from 'lucide-react';
 
 export const AISummary = ({ projectId }) => {
-  const { summary, insights, suggestions, isLoading, error, fetchSummary } = useAIStore();
+  const { 
+    summary, 
+    insights, 
+    suggestions, 
+    isLoading, 
+    error, 
+    fetchSummary, 
+    currentProjectId,
+    fetchInProgress 
+  } = useAIStore();
+  
+  // Use useRef to track if we've initiated a fetch for this component instance
+  const hasFetchedRef = useRef(false);
   
   useEffect(() => {
-    if (projectId) {
+    // Only fetch if:
+    // 1. We have a valid projectId
+    // 2. We haven't already fetched for this component instance OR we're switching projects
+    // 3. There's no fetch already in progress
+    if (projectId && !fetchInProgress && (!hasFetchedRef.current || currentProjectId !== projectId)) {
+      console.log(`Fetching summary for project ${projectId}`);
+      hasFetchedRef.current = true;
       fetchSummary(projectId);
     }
-  }, [projectId, fetchSummary]);
+  }, [projectId, fetchSummary, currentProjectId, fetchInProgress]);
   
   const handleRefresh = () => {
-    fetchSummary(projectId);
+    if (!fetchInProgress) {
+      fetchSummary(projectId);
+    }
   };
   
   return (
@@ -66,7 +86,7 @@ export const AISummary = ({ projectId }) => {
                   </h3>
                   <ul className="space-y-2">
                     {insights.map((insight, index) => (
-                      <li key={index} className="text-muted-foreground">
+                      <li key={`insight-${currentProjectId}-${index}`} className="text-muted-foreground">
                         • {insight}
                       </li>
                     ))}
@@ -85,7 +105,7 @@ export const AISummary = ({ projectId }) => {
                   </h3>
                   <ul className="space-y-2">
                     {suggestions.map((suggestion, index) => (
-                      <li key={index} className="text-muted-foreground">
+                      <li key={`suggestion-${currentProjectId}-${index}`} className="text-muted-foreground">
                         • {suggestion}
                       </li>
                     ))}

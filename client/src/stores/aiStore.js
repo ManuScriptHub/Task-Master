@@ -8,22 +8,43 @@ export const useAIStore = create((set, get) => ({
   chatHistory: [],
   isLoading: false,
   error: null,
+  currentProjectId: null,
+  fetchInProgress: false,
   
   // Fetch AI summary for a project
   fetchSummary: async (projectId) => {
-    set({ isLoading: true, error: null });
+    // Prevent multiple simultaneous fetches
+    if (get().fetchInProgress) {
+      console.log("Fetch already in progress, skipping");
+      return;
+    }
+    
+    // Reset summary data when switching projects
+    if (get().currentProjectId !== projectId) {
+      set({ 
+        summary: null, 
+        insights: [], 
+        suggestions: [], 
+        currentProjectId: projectId 
+      });
+    }
+    
+    set({ isLoading: true, error: null, fetchInProgress: true });
     try {
       const data = await api.get(`/ai/summary/${projectId}`);
       set({ 
         summary: data.summary,
         insights: data.insights,
         suggestions: data.suggestions,
-        isLoading: false 
+        isLoading: false,
+        currentProjectId: projectId,
+        fetchInProgress: false
       });
     } catch (error) {
       set({ 
         isLoading: false, 
-        error: error.message || 'Failed to fetch AI summary' 
+        error: error.message || 'Failed to fetch AI summary',
+        fetchInProgress: false
       });
     }
   },
