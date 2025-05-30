@@ -2,6 +2,13 @@
 
 TaskMaster is a full-stack project management application that helps users organize tasks, track progress, and manage projects efficiently. It features an AI assistant powered by Google's Gemini API to provide project insights and suggestions.
 
+## 🎥 Demo Video
+
+<a href="https://www.loom.com/share/db7955cc935c43c48cde3ed737b21bf1?sid=a060e7ff-5d26-4ef8-bc93-39d4b5406c20" target="_blank">
+  <img src="https://i.ibb.co/ZR4wzTRs/Desktop-2.png" alt="Demo Video Thumbnail" width="600"/>
+</a>
+
+
 ## Features
 
 - **Project Management**: Create, edit, and delete projects
